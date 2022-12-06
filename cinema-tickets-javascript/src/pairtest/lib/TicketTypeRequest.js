@@ -1,6 +1,7 @@
 /**
  * Immutable Object.
  */
+import prices from './prices.js'
 
 export default class TicketTypeRequest {
   #totalTickets = 0
@@ -19,13 +20,24 @@ export default class TicketTypeRequest {
         throw new TypeError(`type must be ${this.#Type.slice(0, -1).join(', ')}, or ${this.#Type.slice(-1)}`);
       }
   
-      if (!Number.isInteger(quantity)) {
-        throw new TypeError('quantity must be an integer');
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new TypeError('quantity must be an integer and greater than 0');
       }
       
-      this[ticketType]=quantity
+      this[ticketType]=quantity 
+      //TODO: detect whether same type is being input more than once...
+    }
+    
+    if (Object.keys(this).includes('CHILD') || Object.keys(this).includes('INFANT')) {
+      if (!Object.keys(this).includes('ADULT')) {
+        throw new TypeError(`Need at least 1 adult to accompany the children/infants`);
+      }
     }
 
+    if (Object.keys(this).includes('INFANT'))    
+      if (this['ADULT']<this['INFANT']) {
+        throw new TypeError(`There aren't enough adults for the amount of infants`);
+      }
   }
 
   getNoOfTicketsForAType(type) {
@@ -39,21 +51,13 @@ export default class TicketTypeRequest {
     return Object.keys(this);
   }
 
+  getTotalCost() {
+    let totalCost = 0
+    for (let type of Object.keys(this)) {
+      totalCost += prices[type] * this[type]
+    }
+    return totalCost
+  }
+
   #Type = ['ADULT', 'CHILD', 'INFANT'];
 }
-
-
-
-//tests for buying more than 20 tickets
-// let newTickets = new TicketTypeRequest([['ADULT', 3],['INFANT',5],['INFANT',5],['CHILD',5]])
-//=> should be fine
-// let newTickets = new TicketTypeRequest([['ADULT', 3],['INFANT',5],['INFANT',5],['CHILD',5],['CHILD',5]])
-//=> should'nt be fine
-// let newTickets = new TicketTypeRequest([['ADULT', 30]])
-// //=> should'nt be fine
-// let newTickets = new TicketTypeRequest([['CHILD', 30]])
-// //=> should'nt be fine
-// let newTickets = new TicketTypeRequest([['INFANT', 30]])
-// //=> should'nt be fine
-
-console.log(newTickets.getAllTicketTypes())
