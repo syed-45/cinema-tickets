@@ -31,13 +31,15 @@ export default class TicketTypeRequest {
       }      
     }
     
-    if (Object.keys(this).includes('CHILD') || Object.keys(this).includes('INFANT')) {
-      if (!Object.keys(this).includes('ADULT')) {
+    const types = Object.keys(this)
+
+    if (types.includes('CHILD') || types.includes('INFANT')) {
+      if (!types.includes('ADULT')) {
         throw new TypeError(`Need at least 1 adult to accompany the children/infants`);
       }
     }
 
-    if (Object.keys(this).includes('INFANT')) { 
+    if (types.includes('INFANT')) {
       if (this['ADULT']<this['INFANT']) {
         throw new TypeError(`There aren't enough adults for the amount of infants`);
       }
@@ -52,7 +54,7 @@ export default class TicketTypeRequest {
   }
 
   getAllTicketTypes() {
-    return Object.keys(this);
+    return types;
   }
 
   getTotalCost() {

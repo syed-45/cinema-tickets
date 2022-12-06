@@ -33,5 +33,5 @@ import TicketTypeRequest from './TicketTypeRequest.js'
 //duplicate types
 // let newTickets = new TicketTypeRequest([['CHILD',4],['ADULT',1],['CHILD',3]])  // => error
 // let newTickets = new TicketTypeRequest([['ADULT',3],['ADULT',2],['CHILD',1]])  // => error
-let newTickets = new TicketTypeRequest([['INFANT',4],['ADULT',12],['INFANT',3]])  // => error
-console.log(newTickets.getTotalCost())
+// let newTickets = new TicketTypeRequest([['INFANT',4],['ADULT',12],['INFANT',3]])  // => error
+// console.log(newTickets.getTotalCost())
