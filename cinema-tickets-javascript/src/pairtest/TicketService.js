@@ -1,20 +1,43 @@
 import TicketTypeRequest from './lib/TicketTypeRequest.js';
 import InvalidPurchaseException from './lib/InvalidPurchaseException.js';
+import TicketPaymentService from '../thirdparty/paymentgateway/TicketPaymentService.js';
+import SeatReservationService from '../thirdparty/seatbooking/SeatReservationService.js';
 
 export default class TicketService {
   /**
    * Should only have private methods other than the one below.
-   
-   request#1: 2 infant, 1 adult, 2 child tickets => system processes tickets
-   request#2: 2 infant  => throw error, need at least 1 adult
-   request#3: 2 child  => throw error, need at least 1 adult
-   request#4: 4 adult 4 child => system processes tickets
-   request#5: 3infant 1adult => throw error, not enough adults for infants
-   
-   - typeof ticket? -> no of tickets of this type? -> any other tickets? yes - start again, no - continue ->
    */
-   
-  purchaseTickets(accountId, ...ticketTypeRequests) {
-    // throws InvalidPurchaseException
+
+  constructor(accountId, ticketTypeRequests) {
+    if (accountId <= 0) {
+      throw new TypeError(`Your accountId is invalid`)
+    }
+    this.accountId = accountId
+    this.ticketTypeRequests = ticketTypeRequests
   }
+
+  purchaseTickets() {     
+    let payment = new TicketPaymentService
+    payment.makePayment(this.accountId, this.ticketTypeRequests.getTotalCost())    
+    this.#reserveSeats()    
+  }
+
+  #reserveSeats() {
+    let totalSeatsToAllocate = 0
+    for (let type of Object.keys(this.ticketTypeRequests)) {
+      if (type!=='INFANT') {
+        totalSeatsToAllocate += this.ticketTypeRequests[type]
+      }      
+    }    
+    let seatReservation = new SeatReservationService 
+    seatReservation.reserveSeat(this.accountId, totalSeatsToAllocate)
+  }
+
 }
+
+
+//example tickets request
+let newTicketRequests = new TicketTypeRequest([['CHILD',12],['ADULT',2],['INFANT',2]])
+let ticketService = new TicketService(509, newTicketRequests)
+ticketService.purchaseTickets()
+
