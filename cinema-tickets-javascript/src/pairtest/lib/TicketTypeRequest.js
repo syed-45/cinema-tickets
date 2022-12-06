@@ -24,8 +24,11 @@ export default class TicketTypeRequest {
         throw new TypeError('quantity must be an integer and greater than 0');
       }
       
-      this[ticketType]=quantity 
-      //TODO: detect whether same type is being input more than once...
+      if (Object.keys(this).includes(ticketType)) {
+        throw new TypeError('each ticket type must be only entered once');
+      } else { 
+        this[ticketType]=quantity 
+      }      
     }
     
     if (Object.keys(this).includes('CHILD') || Object.keys(this).includes('INFANT')) {
@@ -34,10 +37,11 @@ export default class TicketTypeRequest {
       }
     }
 
-    if (Object.keys(this).includes('INFANT'))    
+    if (Object.keys(this).includes('INFANT')) { 
       if (this['ADULT']<this['INFANT']) {
         throw new TypeError(`There aren't enough adults for the amount of infants`);
       }
+    }
   }
 
   getNoOfTicketsForAType(type) {
