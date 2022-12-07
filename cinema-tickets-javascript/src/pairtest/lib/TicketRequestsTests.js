@@ -14,8 +14,8 @@ import TicketTypeRequest from './TicketTypeRequest.js'
 
 
 //tests for buying child tickets without adult
-// let newTickets = new TicketTypeRequest([['INFANT',5],['CHILD',5]])
-// let newTickets = new TicketTypeRequest([['INFANT',15]])
+// let newTickets = new TicketTypeRequest([['INFANT',5],['CHILD',5]]) // should error
+// let newTickets = new TicketTypeRequest([['INFANT',15]])  // should error
 
 
 //tests for not buying enough adult tickets for infants
