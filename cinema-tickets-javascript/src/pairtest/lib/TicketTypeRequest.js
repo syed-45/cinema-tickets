@@ -29,10 +29,11 @@ export default class TicketTypeRequest {
       } else { 
         this[ticketType]=quantity 
       }      
+
     }
     
     const types = Object.keys(this)
-
+    
     if (types.includes('CHILD') || types.includes('INFANT')) {
       if (!types.includes('ADULT')) {
         throw new TypeError(`Need at least 1 adult to accompany the children/infants`);
@@ -44,6 +45,8 @@ export default class TicketTypeRequest {
         throw new TypeError(`There aren't enough adults for the amount of infants`);
       }
     }
+    
+    Object.freeze(this)
   }
 
   getNoOfTicketsForAType(type) {
